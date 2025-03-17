@@ -6,9 +6,17 @@ pipeline {
     }
 
     stages {
+        stage('Checkout SCM') {
+            steps {
+                // Checkout le code du dépôt
+                checkout scm
+            }
+        }
+
         stage('Install Dependencies') {
             steps {
                 echo 'Installing Node.js dependencies...'
+                // Changer le répertoire et installer les dépendances
                 sh 'cd TP5 && npm install'
             }
         }
@@ -16,6 +24,7 @@ pipeline {
         stage('Run Tests') {
             steps {
                 echo 'Running unit tests...'
+                // Changer le répertoire et exécuter les tests
                 sh 'cd TP5 && npm test'
             }
         }
@@ -23,6 +32,7 @@ pipeline {
         stage('Build Project') {
             steps {
                 echo 'Building the project...'
+                // Changer le répertoire et construire le projet
                 sh 'cd TP5 && npm run build'
             }
         }
@@ -30,7 +40,7 @@ pipeline {
         stage('Deploy') {
             steps {
                 echo 'Deploying application...'
-                // Ici, vous pouvez ajouter un script de déploiement personnalisé
+                // Ici, vous pouvez ajouter un script de déploiement personnalisé si nécessaire
             }
         }
     }
@@ -38,11 +48,13 @@ pipeline {
     post {
         success {
             echo 'Pipeline executed successfully!'
-            slackSend (channel: '#ci-cd', message: "✅ Pipeline réussi : ${env.JOB_NAME} #${env.BUILD_NUMBER}")
+            // Envoi de notification Slack si configuré
+            // slackSend (channel: '#ci-cd', message: "✅ Pipeline réussi : ${env.JOB_NAME} #${env.BUILD_NUMBER}")
         }
         failure {
             echo 'Pipeline execution failed!'
-            slackSend (channel: '#ci-cd', message: "❌ Échec du pipeline : ${env.JOB_NAME} #${env.BUILD_NUMBER}")
+            // Envoi de notification Slack si configuré
+            // slackSend (channel: '#ci-cd', message: "❌ Échec du pipeline : ${env.JOB_NAME} #${env.BUILD_NUMBER}")
         }
     }
 }
